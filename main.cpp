@@ -154,7 +154,7 @@ public:
     }
 };
 
-// The snake itself, make of a vector of SnakeSegments, many methods are private
+// The snake itself, made of a vector of SnakeSegments, many methods are private
 // and are used to keep things clean inside the public methods
 class aSlitheryHissingThing
 {
@@ -187,9 +187,7 @@ private:
         return snake[snake.size() - 1].getSegmentY();
     }
 
-    // Checks that the snake's head is not colliding with its body, skips
-    // the tail due to addSegment being called each time whether it is needed
-    // or not
+    // Checks that the snake's head is not colliding with its body
     bool isTheSnakeEatingItself()
     {
         for (unsigned short i = 0; i < snake.size() - 1; i++)
