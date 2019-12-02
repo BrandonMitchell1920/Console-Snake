@@ -141,11 +141,6 @@ public:
 class Apple: public SnakeSegment
 {
 public:
-    Apple(unsigned short newX, unsigned short newY)
-    {
-        x = newX; y = newY;
-    }
-
     void drawSegment()
     {
         setConsoleColor(WALL_COLOR);
@@ -256,9 +251,9 @@ public:
     }
 
     // Sets the position of the apple
-    Apple setApple()
+    Apple setApple(Apple apple)
     {
-        Apple apple = Apple(getRandX(), getRandY());
+        apple.setSegment(getRandX(), getRandY());
 
         unsigned short snakeCount = 0;
 
@@ -269,7 +264,7 @@ public:
                 if (!apple.sameCoords(snake[i])) {snakeCount++;}
             }
             if (snakeCount == snake.size()) {break;}
-            else {apple = Apple(getRandX(), getRandY());}
+            else {apple.setSegment(getRandX(), getRandY());}
         }
         return apple;
     }
@@ -292,7 +287,7 @@ int main()
 
     // Initialize instance of classes
     aSlitheryHissingThing snake = aSlitheryHissingThing();
-    Apple apple = snake.setApple();
+    Apple apple = snake.setApple(apple);
 
     // Draw the apple and snake
     snake.drawTheWholeDarnSnake();
@@ -315,7 +310,7 @@ int main()
 
         // The apple is set through a method of the snake so it know where all the
         // segments are and can avoid them
-        if (snake.ateApple(apple)) {apple = snake.setApple(); apple.drawSegment(); snake.addSegment();}
+        if (snake.ateApple(apple)) {apple = snake.setApple(apple); apple.drawSegment(); snake.addSegment();}
 
         // Only the head is drawn, also clears the trail
         snake.drawSnakeHead();
