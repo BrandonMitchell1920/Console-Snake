@@ -314,7 +314,7 @@ int main()
         if (snake.areYouDeadYet()) {yourDed(); break;}
 
         // The apple is set through a method of the snake so it know where all the
-        // segments are and can avoid them, extra segment is removed, is not very efficient
+        // segments are and can avoid them
         if (snake.ateApple(apple)) {apple = snake.setApple(); apple.drawSegment(); snake.addSegment();}
 
         // Only the head is drawn, also clears the trail
