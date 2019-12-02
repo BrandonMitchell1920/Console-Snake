@@ -91,8 +91,9 @@ unsigned short getRandY()
 // class, has various useful methods
 class SnakeSegment
 {
-public:
+protected:
     unsigned short x, y;
+public:
 
     SnakeSegment(unsigned short passedX = 0, unsigned short passedY = 0)
     {
@@ -134,18 +135,6 @@ public:
     {
         return (getSegmentX() == other.getSegmentX() &&
                 getSegmentY() == other.getSegmentY());
-    }
-};
-
-// Child of SnakeSegment, new constructor and drawSegment method
-class Apple: public SnakeSegment
-{
-public:
-    void drawSegment()
-    {
-        setConsoleColor(WALL_COLOR);
-        setCursorPosition(x, y);
-        std::cout << '@';
     }
 };
 
@@ -245,28 +234,19 @@ public:
         return (isTheSnakeEatingItself() || notInsidePlayArea());
     }
 
-    bool ateApple(Apple apple)
+    std::vector<SnakeSegment> getSnake()
     {
-        return (apple.sameCoords(snake[snake.size() - 1]));
+        return snake;
     }
 
-    // Sets the position of the apple
-    Apple setApple(Apple apple)
+    unsigned short getSnakeSize()
     {
-        apple.setSegment(getRandX(), getRandY());
+        return snake.size();
+    }
 
-        unsigned short snakeCount = 0;
-
-        while (true)
-        {
-            for (unsigned short i = 0; i < snake.size(); i++)
-            {
-                if (!apple.sameCoords(snake[i])) {snakeCount++;}
-            }
-            if (snakeCount == snake.size()) {break;}
-            else {apple.setSegment(getRandX(), getRandY());}
-        }
-        return apple;
+    SnakeSegment getSnakeHead()
+    {
+        return snake[snake.size() - 1];
     }
 
     // What does this do?
@@ -275,7 +255,50 @@ public:
         snake[snake.size() - 1].drawSegment();
         clearTrail();
     }
+};
 
+// Child of SnakeSegment, new constructor and drawSegment method
+class Apple: public SnakeSegment
+{
+public:
+
+    Apple(aSlitheryHissingThing snake)
+    {
+        setApple(snake);
+    }
+
+    void drawSegment()
+    {
+        setConsoleColor(WALL_COLOR);
+        setCursorPosition(x, y);
+        std::cout << '@';
+    }
+
+    // Sets the position of the apple
+    void setApple(aSlitheryHissingThing snake)
+    {
+        unsigned short snakeSize = snake.getSnakeSize();
+        std::vector<SnakeSegment> tempSnake = snake.getSnake();
+
+        setSegment(getRandX(), getRandY());
+
+        unsigned short snakeCount = 0;
+
+        while (true)
+        {
+            for (unsigned short i = 0; i < snakeSize; i++)
+            {
+                if (!sameCoords(tempSnake[i])) {snakeCount++;}
+            }
+            if (snakeCount == snakeSize) {break;}
+            else {setSegment(getRandX(), getRandY());}
+        }
+    }
+
+    bool ateApple(aSlitheryHissingThing snake)
+    {
+        return (sameCoords(snake.getSnakeHead()));
+    }
 };
 
 int main()
@@ -287,7 +310,7 @@ int main()
 
     // Initialize instance of classes
     aSlitheryHissingThing snake = aSlitheryHissingThing();
-    Apple apple = snake.setApple(apple);
+    Apple apple = Apple(snake);
 
     // Draw the apple and snake
     snake.drawTheWholeDarnSnake();
@@ -310,7 +333,7 @@ int main()
 
         // The apple is set through a method of the snake so it know where all the
         // segments are and can avoid them
-        if (snake.ateApple(apple)) {apple = snake.setApple(apple); apple.drawSegment(); snake.addSegment();}
+        if (apple.ateApple(snake)) {apple.setApple(snake); apple.drawSegment(); snake.addSegment();}
 
         // Only the head is drawn, also clears the trail
         snake.drawSnakeHead();
